@@ -8,6 +8,7 @@ var dataGenerator = require('./dataGenerator');
 var Pagination = require('./Pagination');
 var Chart = require('./Chart');
 var Stats = require('./Stats');
+var ShowHideTooltips = require('./ShowHideTooltips');
 var AddRemove = require('./AddRemove');
 
 require('./App.less');
@@ -61,6 +62,9 @@ var App = React.createClass({
           tooltips={this.state.tooltips}
           prevDomain={this.state.prevDomain} />
         <Stats data={this.state.data} />
+        <ShowHideTooltips
+          appState={this.state}
+          setAppState={this.setAppState} />
         <AddRemove
           appState={this.state}
           setAppState={this.setAppState}

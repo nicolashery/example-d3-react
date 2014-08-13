@@ -2,15 +2,23 @@ var d3 = require('d3');
 
 require('./d3Chart.less');
 
+var ANIMATION_DURATION = 400;
+var TOOLTIP_WIDTH = 30;
+var TOOLTIP_HEIGHT = 30;
+
 var ns = {};
 
 ns.create = function(el, state) {
-  d3.select(el).append('svg')
+  var svg = d3.select(el).append('svg')
       .attr('class', 'd3')
       .attr('width', state.width)
-      .attr('height', state.height)
-    .append('g')
+      .attr('height', state.height);
+
+  svg.append('g')
       .attr('class', 'd3-points');
+
+  svg.append('g')
+      .attr('class', 'd3-tooltips');
 
   this.update(el, state);
 };
@@ -19,6 +27,7 @@ ns.update = function(el, state) {
   var scales = this._scales(el, state.domain);
   var prevScales = this._scales(el, state.prevDomain);
   this._drawPoints(el, scales, state.data, prevScales);
+  this._drawTooltips(el, scales, state.tooltips, prevScales);
 };
 
 ns._scales = function(el, domain) {
@@ -45,7 +54,6 @@ ns._scales = function(el, domain) {
 };
 
 ns._drawPoints = function(el, scales, data, prevScales) {
-  var animationDuration = 400;
   var g = d3.select(el).selectAll('.d3-points');
 
   var point = g.selectAll('.d3-point')
@@ -60,19 +68,74 @@ ns._drawPoints = function(el, scales, data, prevScales) {
         return scales.x(d.x);
       })
     .transition()
-      .duration(animationDuration)
+      .duration(ANIMATION_DURATION)
       .attr('cx', function(d) { return scales.x(d.x); });
 
   point.attr('cy', function(d) { return scales.y(d.y); })
       .attr('r', function(d) { return scales.z(d.z); })
     .transition()
-      .duration(animationDuration)
+      .duration(ANIMATION_DURATION)
       .attr('cx', function(d) { return scales.x(d.x); });
 
   point.exit()
     .transition()
-      .duration(animationDuration)
+      .duration(ANIMATION_DURATION)
       .attr('cx', function(d) { return scales.x(d.x); })
+      .remove();
+};
+
+ns._drawTooltips = function(el, scales, tooltips, prevScales) {
+  var g = d3.select(el).selectAll('.d3-tooltips');
+
+  var tooltipRect = g.selectAll('.d3-tooltip-rect')
+    .data(tooltips, function(d) { return d.id; });
+
+  tooltipRect.enter().append('rect')
+      .attr('class', 'd3-tooltip-rect')
+      .attr('width', TOOLTIP_WIDTH)
+      .attr('height', TOOLTIP_HEIGHT)
+      .attr('x', function(d) {
+        if (prevScales) {
+          return prevScales.x(d.x) - TOOLTIP_WIDTH/2;
+        }
+        return scales.x(d.x) - TOOLTIP_WIDTH/2;
+      })
+    .transition()
+      .duration(ANIMATION_DURATION)
+      .attr('x', function(d) { return scales.x(d.x) - TOOLTIP_WIDTH/2; });
+
+  tooltipRect.attr('y', function(d) { return scales.y(d.y) - scales.z(d.z)/2 - TOOLTIP_HEIGHT; })
+    .transition()
+      .duration(ANIMATION_DURATION)
+      .attr('x', function(d) { return scales.x(d.x) - TOOLTIP_WIDTH/2; });
+
+  tooltipRect.exit()
+      .remove();
+
+  var tooltipText = g.selectAll('.d3-tooltip-text')
+    .data(tooltips, function(d) { return d.id; });
+
+  tooltipText.enter().append('text')
+      .attr('class', 'd3-tooltip-text')
+      .attr('dy', '0.35em')
+      .attr('text-anchor', 'middle')
+      .text(function(d) { return d.z; })
+      .attr('x', function(d) {
+        if (prevScales) {
+          return prevScales.x(d.x);
+        }
+        return scales.x(d.x);
+      })
+    .transition()
+      .duration(ANIMATION_DURATION)
+      .attr('x', function(d) { return scales.x(d.x); });
+
+  tooltipText.attr('y', function(d) { return scales.y(d.y) - scales.z(d.z)/2 - TOOLTIP_HEIGHT/2; })
+    .transition()
+      .duration(ANIMATION_DURATION)
+      .attr('x', function(d) { return scales.x(d.x); });
+
+  tooltipText.exit()
       .remove();
 };
 
