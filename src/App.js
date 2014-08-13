@@ -19,8 +19,9 @@ var App = React.createClass({
     return {
       data: this.getData(domain),
       domain: {x: domain, y: [0, 100]},
-      tooltips: [],
-      prevDomain: null
+      tooltip: null,
+      prevDomain: null,
+      showingAllTooltips: false
     };
   },
 

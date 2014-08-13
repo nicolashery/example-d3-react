@@ -125,8 +125,17 @@ ns._drawTooltips = function(el, scales, tooltips, prevScales) {
       .duration(ANIMATION_DURATION)
       .attr('x', function(d) { return scales.x(d.x) - TOOLTIP_WIDTH/2; });
 
-  tooltipRect.exit()
-      .remove();
+  if (prevScales) {
+    tooltipRect.exit()
+      .transition()
+        .duration(ANIMATION_DURATION)
+        .attr('x', function(d) { return scales.x(d.x) - TOOLTIP_WIDTH/2; })
+        .remove();
+  }
+  else {
+    tooltipRect.exit()
+        .remove();
+  }
 
   var tooltipText = g.selectAll('.d3-tooltip-text')
     .data(tooltips, function(d) { return d.id; });
@@ -151,8 +160,17 @@ ns._drawTooltips = function(el, scales, tooltips, prevScales) {
       .duration(ANIMATION_DURATION)
       .attr('x', function(d) { return scales.x(d.x); });
 
-  tooltipText.exit()
-      .remove();
+  if (prevScales) {
+    tooltipText.exit()
+      .transition()
+        .duration(ANIMATION_DURATION)
+        .attr('x', function(d) { return scales.x(d.x); })
+        .remove();
+  }
+  else {
+    tooltipText.exit()
+        .remove();
+  }
 };
 
 ns.destroy = function(el) {

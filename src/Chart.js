@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var React = require('react');
+var _ = require('lodash');
 
 var d3Chart = require('./d3Chart');
 
@@ -21,7 +22,7 @@ var Chart = React.createClass({
     var dispatcher = d3Chart.create(el, {
       width: this.props.width,
       height: this.props.height
-    }, this.props.appState);
+    }, this.getChartState());
     dispatcher.on('point:mouseover', this.showTooltip);
     dispatcher.on('point:mouseout', this.hideTooltip);
     this.dispatcher = dispatcher;
@@ -29,7 +30,21 @@ var Chart = React.createClass({
 
   componentDidUpdate: function(prevProps, prevState) {
     var el = this.getDOMNode();
-    d3Chart.update(el, this.props.appState, this.dispatcher);
+    d3Chart.update(el, this.getChartState(), this.dispatcher);
+  },
+
+  getChartState: function() {
+    var appState = this.props.appState;
+
+    var tooltips = [];
+    if (appState.showingAllTooltips) {
+      tooltips = appState.data;
+    }
+    else if (appState.tooltip) {
+      tooltips = [appState.tooltip];
+    }
+
+    return _.assign({}, appState, {tooltips: tooltips});
   },
 
   render: function() {
@@ -39,16 +54,24 @@ var Chart = React.createClass({
   },
 
   showTooltip: function(d) {
+    if (this.props.appState.showingAllTooltips) {
+      return;
+    }
+
     this.props.setAppState({
-      tooltips: [d],
+      tooltip: d,
       // Disable animation
       prevDomain: null
     });
   },
 
   hideTooltip: function() {
+    if (this.props.appState.showingAllTooltips) {
+      return;
+    }
+    
     this.props.setAppState({
-      tooltips: [],
+      tooltip: null,
       prevDomain: null
     });
   }

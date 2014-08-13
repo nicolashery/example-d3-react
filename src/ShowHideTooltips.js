@@ -17,7 +17,7 @@ var ShowHideTooltips = React.createClass({
   handleShow: function(e) {
     e.preventDefault();
     this.props.setAppState({
-      tooltips: this.props.appState.data,
+      showingAllTooltips: true,
       // Disable animation
       prevDomain: null
     });
@@ -26,7 +26,7 @@ var ShowHideTooltips = React.createClass({
   handleHide: function(e) {
     e.preventDefault();
     this.props.setAppState({
-      tooltips: [],
+      showingAllTooltips: false,
       prevDomain: null
     });
   }
