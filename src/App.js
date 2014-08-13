@@ -55,10 +55,8 @@ var App = React.createClass({
           setAppState={this.setAppState}
           getData={this.getData} />
         <Chart
-          data={this.state.data}
-          domain={this.state.domain}
-          tooltips={this.state.tooltips}
-          prevDomain={this.state.prevDomain} />
+          appState={this.state}
+          setAppState={this.setAppState} />
         <Stats data={this.state.data} />
         <ShowHideTooltips
           appState={this.state}
