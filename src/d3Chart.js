@@ -77,11 +77,17 @@ ns._drawPoints = function(el, scales, data, prevScales) {
       .duration(ANIMATION_DURATION)
       .attr('cx', function(d) { return scales.x(d.x); });
 
-  point.exit()
-    .transition()
-      .duration(ANIMATION_DURATION)
-      .attr('cx', function(d) { return scales.x(d.x); })
-      .remove();
+  if (prevScales) {
+    point.exit()
+      .transition()
+        .duration(ANIMATION_DURATION)
+        .attr('cx', function(d) { return scales.x(d.x); })
+        .remove();
+  }
+  else {
+    point.exit()
+        .remove();
+  }
 };
 
 ns._drawTooltips = function(el, scales, tooltips, prevScales) {

@@ -9,7 +9,7 @@ var Pagination = require('./Pagination');
 var Chart = require('./Chart');
 var Stats = require('./Stats');
 var ShowHideTooltips = require('./ShowHideTooltips');
-var AddRemove = require('./AddRemove');
+var AddRemoveDatum = require('./AddRemoveDatum');
 
 require('./App.less');
 
@@ -36,7 +36,6 @@ var App = React.createClass({
   },
 
   removeDatum: function(domain) {
-    // Note: this function is a bit slow...
     var match = _.find(this._allData, this.isInDomain.bind(null, domain));
     if (match) {
       this._allData = _.reject(this._allData, {id: match.id});
@@ -65,7 +64,7 @@ var App = React.createClass({
         <ShowHideTooltips
           appState={this.state}
           setAppState={this.setAppState} />
-        <AddRemove
+        <AddRemoveDatum
           appState={this.state}
           setAppState={this.setAppState}
           addDatum={this.addDatum}

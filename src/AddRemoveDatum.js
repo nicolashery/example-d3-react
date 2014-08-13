@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var AddRemove = React.createClass({
+var AddRemoveDatum = React.createClass({
   render: function() {
     return (
       <p>
@@ -34,4 +34,4 @@ var AddRemove = React.createClass({
   }
 });
 
-module.exports = AddRemove;
+module.exports = AddRemoveDatum;
