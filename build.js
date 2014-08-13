@@ -7,7 +7,7 @@ rm('-rf', 'dist');
 mkdir('-p', 'dist');
 
 console.log('Bundling all the things...');
-exec('webpack -p --output-file \'bundle.[hash].js\' --devtool source-map --colors --progress');
+exec('webpack --output-file \'bundle.[hash].js\' --devtool source-map --colors --progress');
 
 function getBundleFilename() {
   var matches = ls('dist/bundle.*.js');
