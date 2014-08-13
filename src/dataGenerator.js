@@ -12,15 +12,15 @@ var ns = {};
 ns.generate = function(n) {
   var res = [];
   for (var i = 0; i < n; i++) {
-   res.push(this._generateDatum());
+   res.push(this.generateDatum([X_MIN, X_MAX]));
   }
   return res;
 };
 
-ns._generateDatum = function() {
+ns.generateDatum = function(domain) {
   return {
     id: this._uid(),
-    x: this._randomIntBetween(X_MIN, X_MAX),
+    x: this._randomIntBetween(domain[0], domain[1]),
     y: this._randomIntBetween(Y_MIN, Y_MAX),
     z: this._randomIntBetween(Z_MIN, Z_MAX),
   };

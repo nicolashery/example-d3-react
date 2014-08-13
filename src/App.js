@@ -8,6 +8,7 @@ var dataGenerator = require('./dataGenerator');
 var Pagination = require('./Pagination');
 var Chart = require('./Chart');
 var Stats = require('./Stats');
+var AddRemove = require('./AddRemove');
 
 require('./App.less');
 
@@ -25,9 +26,25 @@ var App = React.createClass({
   _allData: dataGenerator.generate(50),
 
   getData: function(domain) {
-    return _.filter(this._allData, function(d) {
-      return d.x >= domain[0] && d.x <= domain[1];
-    });
+    return _.filter(this._allData, this.isInDomain.bind(null, domain));
+  },
+
+  addDatum: function(domain) {
+    this._allData.push(dataGenerator.generateDatum(domain));
+    return this.getData(domain);
+  },
+
+  removeDatum: function(domain) {
+    // Note: this function is a bit slow...
+    var match = _.find(this._allData, this.isInDomain.bind(null, domain));
+    if (match) {
+      this._allData = _.reject(this._allData, {id: match.id});
+    }
+    return this.getData(domain);
+  },
+
+  isInDomain: function(domain, d) {
+    return d.x >= domain[0] && d.x <= domain[1];
   },
 
   render: function() {
@@ -44,6 +61,11 @@ var App = React.createClass({
           tooltips={this.state.tooltips}
           prevDomain={this.state.prevDomain} />
         <Stats data={this.state.data} />
+        <AddRemove
+          appState={this.state}
+          setAppState={this.setAppState}
+          addDatum={this.addDatum}
+          removeDatum={this.removeDatum} />
       </div>
     );
   },
