@@ -19,6 +19,11 @@ var Chart = React.createClass({
     d3Chart.create(el, this.props);
   },
 
+  componentDidUpdate: function(prevProps, prevState) {
+    var el = this.getDOMNode();
+    d3Chart.update(el, this.props);
+  },
+
   render: function() {
     return (
       <div className="Chart"></div>

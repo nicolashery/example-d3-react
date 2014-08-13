@@ -17,10 +17,15 @@ ns.create = function(el, state) {
 
 ns.update = function(el, state) {
   var scales = this._scales(el, state.domain);
-  this._drawPoints(el, scales, state.data);
+  var prevScales = this._scales(el, state.prevDomain);
+  this._drawPoints(el, scales, state.data, prevScales);
 };
 
 ns._scales = function(el, domain) {
+  if (!domain) {
+    return null;
+  }
+
   var width = el.offsetWidth;
   var height = el.offsetHeight;
 
@@ -39,20 +44,36 @@ ns._scales = function(el, domain) {
   return {x: x, y: y, z: z};
 };
 
-ns._drawPoints = function(el, scales, data) {
+ns._drawPoints = function(el, scales, data, prevScales) {
+  var animationDuration = 400;
   var g = d3.select(el).selectAll('.d3-points');
 
   var point = g.selectAll('.d3-point')
     .data(data, function(d) { return d.id; });
 
   point.enter().append('circle')
-      .attr('class', 'd3-point');
+      .attr('class', 'd3-point')
+      .attr('cx', function(d) {
+        if (prevScales) {
+          return prevScales.x(d.x);
+        }
+        return scales.x(d.x);
+      })
+    .transition()
+      .duration(animationDuration)
+      .attr('cx', function(d) { return scales.x(d.x); });
 
-  point.attr('cx', function(d) { return scales.x(d.x); })
-      .attr('cy', function(d) { return scales.y(d.y); })
-      .attr('r', function(d) { return scales.z(d.z); });
+  point.attr('cy', function(d) { return scales.y(d.y); })
+      .attr('r', function(d) { return scales.z(d.z); })
+    .transition()
+      .duration(animationDuration)
+      .attr('cx', function(d) { return scales.x(d.x); });
 
-  point.exit().remove();
+  point.exit()
+    .transition()
+      .duration(animationDuration)
+      .attr('cx', function(d) { return scales.x(d.x); })
+      .remove();
 };
 
 ns.destroy = function(el) {
