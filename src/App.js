@@ -4,8 +4,10 @@ var React = require('react');
 var _ = require('lodash');
 
 var dataGenerator = require('./dataGenerator');
+
 var Pagination = require('./Pagination');
 var Chart = require('./Chart');
+var Stats = require('./Stats');
 
 require('./App.less');
 
@@ -41,6 +43,7 @@ var App = React.createClass({
           domain={this.state.domain}
           tooltips={this.state.tooltips}
           prevDomain={this.state.prevDomain} />
+        <Stats data={this.state.data} />
       </div>
     );
   },
