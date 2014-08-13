@@ -7,6 +7,7 @@ var Pagination = React.createClass({
   render: function() {
     return (
       <p>
+        {'Pages: '}
         <a href="#" onClick={this.handlePrevious}>Previous</a>
         <span> - </span>
         <a href="#" onClick={this.handleNext}>Next</a>

@@ -50,7 +50,6 @@ var App = React.createClass({
   render: function() {
     return (
       <div className="App">
-        <p>Chart</p>
         <Pagination
           appState={this.state}
           setAppState={this.setAppState}
